@@ -21,8 +21,10 @@ function Board(){
         numberOfMoves++;
 
         //check to see if the move was a winning move
+        /*
         if(this.checkWinningMove(columnNumber))
             win();
+            */
         //toggle to the next player's turn
         firstPlayersTurn = !firstPlayersTurn;
 
@@ -43,11 +45,14 @@ function Board(){
 
         //find out who just played (can't use the variable firstPlayersTurn to check, just in case this is called out of the context of a game);
         var lastTurn = this.plays[columnNumber][this.plays[columnNumber].length - 1];
+        var inARow = 0;
 
-        //Check  | 
+        /*
+         * Check  | 
+         */
         if(this.checkColumnHeight(columnNumber) >= 4){
             var i = this.checkColumnHeight(columnNumber);
-            var inARow=0;
+            inARow = 0;
             while(i--){
                 if(this.plays[columnNumber][i] == lastTurn){
                     inARow++;
@@ -56,6 +61,91 @@ function Board(){
                 else break;
             }
         }
+
+        /*
+         * Check /
+         */
+        inARow = 0;
+        var x = columnNumber;
+        var y = this.checkColumnHeight(columnNumber) - 1;
+
+        //walk down the slope
+        while(x-- && y--){
+            if(this.plays[x][y] == lastTurn){
+                inARow++;
+                if(inARow == 4) return true;
+            }
+            else break;
+        }
+
+        x = columnNumber;
+        y = this.checkColumnHeight(columnNumber) - 1;
+        while(x < XLENGTH && y < YLENGTH){
+            if(this.plays[x][y] == lastTurn){
+                inARow++;
+                if(inARow == 4) return true;
+                x++;
+                y++;
+            }
+            else break;
+        }
+
+        /*
+         * Check -
+         */
+        x = columnNumber;
+        y = this.checkColumnHeight(columnNumber) - 1;
+        inARow = 0;
+        var test = this.checkColumnHeight(columnNumber);
+        //to the left...
+        while(x--){
+            if(this.plays[x][y] == lastTurn){
+                inARow++;
+                if(inARow == 4) return true; 
+            }
+            else break;
+        }
+        //to the right...
+        x = columnNumber;
+        while(x < XLENGTH){
+            if(this.plays[x][y] == lastTurn){
+                inARow++;
+                if(inARow == 4) return true; 
+                x++;
+            }
+            else break;
+        }
+
+        /*
+         * Check \
+         */
+        inARow = 0;
+        var x = columnNumber;
+        var y = this.checkColumnHeight(columnNumber);
+
+        //walk down the slope
+        while(x < XLENGTH && y--){
+            if(this.plays[x][y] == lastTurn){
+                inARow++;
+                if(inARow == 4) return true;
+                x++;
+            }
+            else break;
+        }
+
+        //walk up the slope
+        x = columnNumber;
+        y = this.checkColumnHeight(columnNumber) - 1;
+        while(x-- && y < YLENGTH){
+            if(this.plays[x][y] == lastTurn){
+                inARow++;
+                if(inARow == 4) return true;
+                y++;
+            }
+            else break;
+        }
+
+        //no solutions found along any axis
         return false;
     }
     
