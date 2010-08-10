@@ -1,7 +1,7 @@
 function Board(){
     var XLENGTH = 7;
     var YLENGTH = 6;
-    var numberOfMoves = 0;
+    var turnCounter = 0;
     var firstPlayersTurn = true;
     /*init the 2d array that will store the board's current state*/
     this.plays = new Array(XLENGTH);
@@ -11,14 +11,23 @@ function Board(){
         this.plays[i] = new Array;
     }
 
+    this.getTurnCounter = function(){
+        return turnCounter;
+    }
+
+    //returns true if it's the first player's turn, and false otherwise
+    this.getCurrentMove = function(columnNumber){
+        return firstPlayersTurn;
+    }
+
     //drops a piece into a column, iff the column is not at the max height.
     this.dropInColumn = function(columnNumber){
         if(columnNumber >= XLENGTH) return false;
-        if(this.checkColumnHeight(columnNumber) >= YLENGTH) return false;
+        if(this.getColumnHeight(columnNumber) >= YLENGTH) return false;
 
         this.plays[columnNumber].push(firstPlayersTurn);
         //incriment the number of moves
-        numberOfMoves++;
+        turnCounter++;
 
         //check to see if the move was a winning move
         /*
@@ -32,7 +41,7 @@ function Board(){
     } 
 
     //checks the column height at any location of the board.
-    this.checkColumnHeight = function(columnNumber){
+    this.getColumnHeight = function(columnNumber){
         return this.plays[columnNumber].length;
     }
 
@@ -41,7 +50,7 @@ function Board(){
         /* Have to check for solutions along four axis ( |, /, -, and \ ), each iteration here tests to see if an axis has a solution, and if so returns true. If not, it returns false; */
 
         //return false if we don't have enough moves queued to create a solution;
-        if(numberOfMoves < 7) return false; 
+        if(turnCounter < 7) return false; 
 
         //find out who just played (can't use the variable firstPlayersTurn to check, just in case this is called out of the context of a game);
         var lastTurn = this.plays[columnNumber][this.plays[columnNumber].length - 1];
@@ -50,8 +59,8 @@ function Board(){
         /*
          * Check  | 
          */
-        if(this.checkColumnHeight(columnNumber) >= 4){
-            var i = this.checkColumnHeight(columnNumber);
+        if(this.getColumnHeight(columnNumber) >= 4){
+            var i = this.getColumnHeight(columnNumber);
             inARow = 0;
             while(i--){
                 if(this.plays[columnNumber][i] == lastTurn){
@@ -67,7 +76,7 @@ function Board(){
          */
         inARow = 0;
         var x = columnNumber;
-        var y = this.checkColumnHeight(columnNumber) - 1;
+        var y = this.getColumnHeight(columnNumber) - 1;
 
         //walk down the slope
         while(x-- && y--){
@@ -79,7 +88,7 @@ function Board(){
         }
 
         x = columnNumber;
-        y = this.checkColumnHeight(columnNumber) - 1;
+        y = this.getColumnHeight(columnNumber) - 1;
         while(x < XLENGTH && y < YLENGTH){
             if(this.plays[x][y] == lastTurn){
                 inARow++;
@@ -94,9 +103,9 @@ function Board(){
          * Check -
          */
         x = columnNumber;
-        y = this.checkColumnHeight(columnNumber) - 1;
+        y = this.getColumnHeight(columnNumber) - 1;
         inARow = 0;
-        var test = this.checkColumnHeight(columnNumber);
+        var test = this.getColumnHeight(columnNumber);
         //to the left...
         while(x--){
             if(this.plays[x][y] == lastTurn){
@@ -121,7 +130,7 @@ function Board(){
          */
         inARow = 0;
         var x = columnNumber;
-        var y = this.checkColumnHeight(columnNumber);
+        var y = this.getColumnHeight(columnNumber);
 
         //walk down the slope
         while(x < XLENGTH && y--){
@@ -135,7 +144,7 @@ function Board(){
 
         //walk up the slope
         x = columnNumber;
-        y = this.checkColumnHeight(columnNumber) - 1;
+        y = this.getColumnHeight(columnNumber) - 1;
         while(x-- && y < YLENGTH){
             if(this.plays[x][y] == lastTurn){
                 inARow++;

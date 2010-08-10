@@ -25,12 +25,19 @@ new Test.Unit.Runner({
         assert(!x.dropInColumn(7));
     }},
 
+    testTurnCounter: function() { with(this) {
+        var x = new Board();
+        assert(x.getTurnCounter() == 0);
+        x.dropInColumn(0);
+        assert(x.getTurnCounter() == 1);
+    }},
+
     testCheckColumnHeight: function() { with(this) {
         var x = new Board();
-        assert(x.checkColumnHeight(0) == 0);
+        assert(x.getColumnHeight(0) == 0);
 
         x.dropInColumn(0);
-        assert(x.checkColumnHeight(0) == 1);
+        assert(x.getColumnHeight(0) == 1);
     }},
 
 
