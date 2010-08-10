@@ -3,6 +3,9 @@ function Board(){
     var YLENGTH = 6;
     var turnCounter = 0;
     var firstPlayersTurn = true;
+
+    var playerOneScore = 0;
+    var playerTwoScore = 0;
     /*init the 2d array that will store the board's current state*/
     this.plays = new Array(XLENGTH);
 
@@ -30,10 +33,19 @@ function Board(){
         turnCounter++;
 
         //check to see if the move was a winning move
-        /*
-        if(this.checkWinningMove(columnNumber))
+        if(this.checkWinningMove(columnNumber)){
+            if(firstPlayersTurn)
+                playerOneScore++;
+            else
+                playerTwoScore++;
             win();
-            */
+        }
+
+        //if we've filled the board, trigger ending function
+        if(turnCounter == XLENGTH * YLENGTH){
+            finish();
+        }
+        
         //toggle to the next player's turn
         firstPlayersTurn = !firstPlayersTurn;
 
@@ -159,7 +171,16 @@ function Board(){
     }
     
     var win = function(){
+        //Original win action
         //alert('Player ' + ( firstPlayersTurn ? 'one ' : 'two ' ) + 'has won.');
+        $('#player' + ( firstPlayersTurn ? 'One' : 'Two' ) + 'Score').html( firstPlayersTurn ? playerOneScore : playerTwoScore);
+    }
+
+    var finish = function(){
+        if(playerOneScore == playerTwoScore)
+            alert('Tie Game!');
+        else
+            alert('Player ' + (playerOneScore > playerTwoScore ? 'one ' : 'two ') + 'has won!');
     }
 }
 

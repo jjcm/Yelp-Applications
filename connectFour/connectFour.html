@@ -1,3 +1,5 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
 <html>
     <head>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
@@ -5,16 +7,39 @@
         <script type="text/javascript" src="connectFour.js"></script>
         <script type="text/javascript" src="board.js"></script>
         <style type="text/css">
-            body { background: #0e0e0e url('bg.jpg'); }
-            #board table { width: 960px; height: 500px; background-color: #333;}
+            body { background: #0e0e0e url('bg.jpg') top center no-repeat; }
+
+            #header { position: absolute; top: 0px; width: 600px; margin: 0px 217px; color: #DDD; text-align: center; z-index: 10;}
+            #header h1 { padding: 0px; margin: 0px; font-family: monospace; font-size: 12px; letter-spacing: 4px; }
+            #header p { padding: 0px; margin: 0px; font-family: sans-serif; font-size: 12px; color: #AAA;}
+
+            #board { position: relative; margin-left: auto; margin-right: auto; width: 1034px; height: 1030px;}
+            #board table { width: 1020px; height: 1020px; position: absolute; top: 0px; margin: 0px 7px;}
+            #board table#input { height: 860px; margin-top: 115px }
             #board table tr td {width: 120px; position: relative;}
-            #board table tr td:hover {background-color: #666;}
-            .piece { position: absolute; top: 0px; display: block; width: 80px; height: 80px; -moz-border-radius: 40px; -webkit-border-radius: 40px;}
+            #board table tr td:hover {background-color: #666; opacity: .3; cursor: pointer; -moz-border-radius: 70px; -webkit-border-radius: 70px;}
+            .piece { position: absolute; top: 0px; display: block; width: 140px; height: 140px; -moz-border-radius: 70px; -webkit-border-radius: 70px;}
+            #board #fg { position: absolute; top: -5px; }
+
+            #scoreboard { position: absolute; top: 0px; width: 100%; font-family: sans-serif;}
+            #scoreboard div { position: absolute; top: 0px; width: 200px; height: 200px; text-align: center; }
+            #scoreboard h2 { padding: 0px; margin: 0px; }
+            #scoreboard span { font-size: 46px; font-weight: bold; }
+            #scoreboard #playerOne { left: 0px; color: #F33;}
+            #scoreboard #playerTwo { right: 0px; color: #33F;}
             
         </style>
     </head>
     <body>
         <div id="board">
+            <div id="header">
+                <h1>Connect Four Advanced</h1>
+                <p title="*permutations are not counted. That is, if you have a 4x4 block of all red pieces, you'd only get 4 points, not 10">Rather than just let the user win once they've completed four, I figured I'd give the loser a chance at redemption. After all, a game of chess doesn't end at the death of the first pawn - so in this game the play continues tunil the entire board is filled. The player who creates the most sets of four* during this time, wins.</p>
+            </div>
+            <div id="scoreboard">
+                <div id="playerOne"><h2>Player One</h2><span id='playerOneScore'>0</span></div>
+                <div id="playerTwo"><h2>Player Two</h2><span id='playerTwoScore'>0</span></div>
+            </div>
             <table>
                 <tr>
                     <td id="column0"></td>
@@ -26,6 +51,18 @@
                     <td id="column6"></td>
                 </tr>
             </table>
+            <img id="fg" src='fg.png'/>
+            <table id="input">
+                <tr>
+                    <td id="input0"></td>
+                    <td id="input1"></td>
+                    <td id="input2"></td>
+                    <td id="input3"></td>
+                    <td id="input4"></td>
+                    <td id="input5"></td>
+                    <td id="input6"></td>
+                </tr>
+            </table>
         </div>
         <script type="text/javascript">
             var x = new Board();
@@ -34,16 +71,14 @@
                     //bind to each column
                     i = 7;
                     while(i--)
-                        $('#column' + i).click(function(){
+                        $('#input' + i).click(function(){
                             if(x.getColumnHeight(this.cellIndex) < 6){
                                 $('#column' + this.cellIndex).prepend('<div class=\'piece\' id=\'move' + x.getTurnCounter() + '\' style=\'background: #' + ((x.getTurnCounter() % 2 == 0) ? 'f33' : '33f') + '\'></div>');
                                 $('#move' + x.getTurnCounter()).animate({
                                     opacity: 1,
-                                    top: (boardHeight - (x.getColumnHeight(this.cellIndex) * 80) - 80) + 'px'
+                                    top: (boardHeight - (x.getColumnHeight(this.cellIndex) * 140) - 210) + 'px'
                                 }, (1000 - (x.getColumnHeight(this.cellIndex) * 140)), 'easeOutBounce', function(){});
                                 x.dropInColumn(this.cellIndex);
-
-                                if(x.checkWinningMove(this.cellIndex)) alert("win!");
                             }
 
                         });
