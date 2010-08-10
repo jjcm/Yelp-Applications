@@ -3,13 +3,47 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
         <script type="text/javascript" src="connectFour.js"></script>
         <script type="text/javascript" src="board.js"></script>
+        <style type="text/css">
+            #board table { width: 960px; height: 500px; background-color: #333;}
+            #board table tr td {width: 120px; position: relative;}
+            #board table tr td:hover {background-color: #666;}
+            .piece { position: absolute; top: 0px; }
+            
+        </style>
     </head>
     <body>
+        <div id="board">
+            <table>
+                <tr>
+                    <td id="column0"></td>
+                    <td id="column1"></td>
+                    <td id="column2"></td>
+                    <td id="column3"></td>
+                    <td id="column4"></td>
+                    <td id="column5"></td>
+                    <td id="column6"></td>
+                </tr>
+            </table>
+        </div>
         <script type="text/javascript">
-            init();
             var x = new Board();
-            x.dropInColumn();
-            x.plays[0].push(1);
+            var boardHeight = $('#board').height();
+            $(document).ready(function(){
+                    //bind to each column
+                    i = 7;
+                    while(i--)
+                        $('#column' + i).click(function(){
+                            $('#column' + this.cellIndex).prepend('<div class=\'piece\' id=\'move' + x.getTurnCounter() + '\'>' + x.getCurrentMove() + '</div>');
+                            $('#move' + x.getTurnCounter()).animate({
+                                opacity: 1,
+                                top: (boardHeight - (x.getColumnHeight(this.cellIndex) * 30)) + 'px'
+                            }, 1000, 'easeOut', function(){});
+                            x.dropInColumn(this.cellIndex);
+
+                            if(x.checkWinningMove(this.cellIndex)) alert("win!");
+
+                        });
+            });
 
         </script>
     </body>
