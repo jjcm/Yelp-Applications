@@ -1,13 +1,15 @@
 <html>
     <head>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
         <script type="text/javascript" src="connectFour.js"></script>
         <script type="text/javascript" src="board.js"></script>
         <style type="text/css">
+            body { background: #0e0e0e url('bg.jpg'); }
             #board table { width: 960px; height: 500px; background-color: #333;}
             #board table tr td {width: 120px; position: relative;}
             #board table tr td:hover {background-color: #666;}
-            .piece { position: absolute; top: 0px; }
+            .piece { position: absolute; top: 0px; display: block; width: 80px; height: 80px; -moz-border-radius: 40px; -webkit-border-radius: 40px;}
             
         </style>
     </head>
@@ -33,14 +35,16 @@
                     i = 7;
                     while(i--)
                         $('#column' + i).click(function(){
-                            $('#column' + this.cellIndex).prepend('<div class=\'piece\' id=\'move' + x.getTurnCounter() + '\'>' + x.getCurrentMove() + '</div>');
-                            $('#move' + x.getTurnCounter()).animate({
-                                opacity: 1,
-                                top: (boardHeight - (x.getColumnHeight(this.cellIndex) * 30)) + 'px'
-                            }, 1000, 'easeOut', function(){});
-                            x.dropInColumn(this.cellIndex);
+                            if(x.getColumnHeight(this.cellIndex) < 6){
+                                $('#column' + this.cellIndex).prepend('<div class=\'piece\' id=\'move' + x.getTurnCounter() + '\' style=\'background: #' + ((x.getTurnCounter() % 2 == 0) ? 'f33' : '33f') + '\'></div>');
+                                $('#move' + x.getTurnCounter()).animate({
+                                    opacity: 1,
+                                    top: (boardHeight - (x.getColumnHeight(this.cellIndex) * 80) - 80) + 'px'
+                                }, (1000 - (x.getColumnHeight(this.cellIndex) * 140)), 'easeOutBounce', function(){});
+                                x.dropInColumn(this.cellIndex);
 
-                            if(x.checkWinningMove(this.cellIndex)) alert("win!");
+                                if(x.checkWinningMove(this.cellIndex)) alert("win!");
+                            }
 
                         });
             });
